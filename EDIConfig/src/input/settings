@@ -1,0 +1,2 @@
+EXCLUSION
+JOBN_PAR=^BOM_.*|^.+\.RAP.*|^RAP[\._].*
