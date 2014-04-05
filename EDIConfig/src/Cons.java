@@ -4,7 +4,9 @@ public enum Cons {
 	EQ("="),
 	JOB_PARN_REGEX("[\" ]"),
 	STANDARD_RULE("EV_ATTRI=SENDER"),
-	EXC("EXCLUSION");
+	EXC("EXCLUSION"),
+	GRP("GROUPING"),
+	SETTING("EXCLUSION|GROUPING");
 	
 	private final String s;
 	

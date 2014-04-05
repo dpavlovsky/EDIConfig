@@ -8,13 +8,21 @@ public class Rule implements Comparable<Rule> {
 	private TreeMap<Attr,Flag> 		flags = new TreeMap<Attr,Flag>();
 	private TreeMap<Attr,String> 	vals = new TreeMap<Attr,String>();
 	
-//	private String group;
+	private String group="";
 	
 	public Rule() {
 		for (Attr a : Attr.values()) {
 			flags.put(a, Flag.OFF);
 			vals.put(a, "");
 		}
+	}
+	
+	public void setGroup(String g) {
+		group = g;
+	}
+	
+	public String getGroup() {
+		return group;
 	}
 	
 	@Override

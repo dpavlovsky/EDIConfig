@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
@@ -19,6 +20,8 @@ import org.apache.poi.ss.usermodel.Row;
 
 public class Relations {
 	TreeSet<Rule> rel;
+	TreeMap<String, String> grp;
+	
 	Rule excRule=null;
 	
 	@Override
@@ -45,7 +48,12 @@ public class Relations {
 						excRule = new Rule();
 						continue;
 					}
-					if (excRule!=null) {
+					if (grp==null && data.startsWith(Cons.GRP.toString())) {
+						grp = new TreeMap<String, String>();
+						continue;
+					}
+					
+					if (excRule!=null && grp==null) {
 						String[] attributes = data.split(Cons.EQ.toString());
 						for (Attr a : Attr.values()) {
 							if (a.toString().equals(attributes[0]) && excRule.getAttr(a)!=null && !excRule.getAttr(a).isEmpty()) {
@@ -55,6 +63,13 @@ public class Relations {
 								excRule.setAttr(a,attributes[1]);
 								break;
 							}
+						}
+					}
+					
+					if (grp!=null) {
+						String[] attributes = data.split(Cons.EQ.toString());
+						if (attributes.length>1) {
+							grp.put(attributes[0], attributes[1]);
 						}
 					}
 				}
@@ -67,6 +82,7 @@ public class Relations {
 			}
 			
 		}
+		
 		boolean notAdd=false;
 		int numRules=0;
 		file = new File(fileName);
@@ -74,7 +90,6 @@ public class Relations {
 			try {
 				fr = new FileReader(file);
 				br = new BufferedReader(fr);
-				
 				switch (sort) {
 					case JOB:
 						Rule.ComparatorJob  compJob  = new Rule.ComparatorJob();
@@ -109,6 +124,14 @@ public class Relations {
 								}
 							}
 							if (!notAdd) {
+								Set<String> grpKeys = grp.keySet();
+								for (String k : grpKeys) {
+									Pattern p = Pattern.compile(grp.get(k));
+									Matcher m = p.matcher(rule.getAttr(Attr.JOBN_PAR));
+									if (m.matches()) {
+										rule.setGroup(k);
+									}
+								}
 								rel.add(rule);
 								numRules++;
 							}
@@ -167,6 +190,14 @@ public class Relations {
 						}
 					}
 					if (!notAdd) {
+						Set<String> grpKeys = grp.keySet();
+						for (String k : grpKeys) {
+							Pattern p = Pattern.compile(grp.get(k));
+							Matcher m = p.matcher(rule.getAttr(Attr.JOBN_PAR));
+							if (m.matches()) {
+								rule.setGroup(k);
+							}
+						}
 						rel.add(rule);
 						numRules++;
 					}

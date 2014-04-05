@@ -1,2 +1,5 @@
 EXCLUSION
 JOBN_PAR=^BOM_.*|^.+\.RAP.*|^RAP[\._].*
+
+GROUPING
+*.SAP.TF.FTP=^.\.SAP\.TF\.FTP$
