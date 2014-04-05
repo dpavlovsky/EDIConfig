@@ -5,8 +5,7 @@ import java.util.TreeMap;
 
 public class Rule implements Comparable<Rule> {
 
-//	private Object[][] flags;
-	private TreeMap<Attr,Flag> fgs = new TreeMap<Attr,Flag>();
+	private TreeMap<Attr,Flag> flags = new TreeMap<Attr,Flag>();
 	
 	private String sender			="";
 	private String receiver			="";
@@ -61,18 +60,8 @@ public class Rule implements Comparable<Rule> {
 	private String use_lockfile		="";
 	
 	public Rule() {
-		/*
-		int index=0;
-		flags = new Object[51][2];
-		
-		for (Attr a : Attr.values()) {
-			flags[index][0]=a;
-			flags[index][1]=Flag.OFF;
-			index++;
-		}
-		*/
 		for (Attr a : Attr.values())
-			fgs.put(a, Flag.OFF);
+			flags.put(a, Flag.OFF);
 	}
 	
 	@Override
@@ -186,50 +175,10 @@ public class Rule implements Comparable<Rule> {
 		}
 		return "";
 	}
-	/*
+
 	public void setAttrFlag(Attr attribute, Flag flg) {
 		try {
 			Field f = this.getClass().getDeclaredField("flags");
-			f.setAccessible(true);
-			Object[][] flgs = (Object[][])f.get(this);
-			for (int i = 0; i < flgs.length; i++) {
-				if (flgs[i][0].toString().equals(attribute.toString())) {
-					flgs[i][1]=flg;
-					break;
-				}
-			}
-			f.set(this,flgs);
-		} catch (NoSuchFieldException e) {
-			System.out.println("NoSuchFieldException "+e);
-		} catch (IllegalAccessException e) {
-			System.out.println("IllegalAccessException "+e);
-		} catch (Exception e) {
-			System.out.println("Exception "+e);
-		}
-	}	
-	
-	public Flag getAttrFlag(Attr attribute) {
-		try {
-			Field f = this.getClass().getDeclaredField("flags");
-			f.setAccessible(true);
-			Object[][] flgs = (Object[][])f.get(this);
-			for (int i = 0; i < flgs.length; i++) {
-				if (flgs[i][0].toString().equals(attribute.toString()))
-					return (Flag)flgs[i][1];
-			}
-		} catch (NoSuchFieldException e) {
-			System.out.println("NoSuchFieldException "+e);
-		} catch (IllegalAccessException e) {
-			System.out.println("IllegalAccessException "+e);
-		} catch (Exception e) {
-			System.out.println("Exception "+e);
-		}
-		return Flag.OFF;
-	}
-	*/
-	public void setAttrFlag1(Attr attribute, Flag flg) {
-		try {
-			Field f = this.getClass().getDeclaredField("fgs");
 			f.setAccessible(true);
 			TreeMap<Attr,Flag> flgs = (TreeMap<Attr,Flag>)f.get(this);
 			flgs.put(attribute, flg);
@@ -243,9 +192,9 @@ public class Rule implements Comparable<Rule> {
 		}
 	}
 	
-	public Flag getAttrFlag1(Attr attribute) {
+	public Flag getAttrFlag(Attr attribute) {
 		try {
-			Field f = this.getClass().getDeclaredField("fgs");
+			Field f = this.getClass().getDeclaredField("flags");
 			f.setAccessible(true);
 			TreeMap<Attr,Flag> flgs = (TreeMap<Attr,Flag>)f.get(this);
 			return flgs.get(attribute);

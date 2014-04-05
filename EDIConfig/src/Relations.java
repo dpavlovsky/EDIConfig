@@ -20,9 +20,8 @@ public class Relations {
 	@Override
 	public String toString() {
 		String s=null;
-		for (Rule r : rel) {
-			s+=r;			
-		}	
+		for (Rule r : rel)
+			s+=r;
 		return s;
 	}
 	
@@ -63,14 +62,14 @@ public class Relations {
 								if (s.startsWith(a.toString()+Cons.EQ.toString())) {
 									String[] attributes = s.split(Cons.EQ.toString());
 									if (attributes.length>1) rule.setAttr(a,attributes[1]);
-									rule.setAttrFlag1(a, Flag.ON);
+									rule.setAttrFlag(a, Flag.ON);
 									break;
 								}
 							}
 							if (s.startsWith(Cons.STANDARD_RULE.toString()+Cons.EQ.toString())) {
 								String[] attributes = s.split(Cons.EQ.toString());
 								if (attributes.length>2) rule.setAttr(Attr.SENDER,attributes[2]);
-								rule.setAttrFlag1(Attr.SENDER, Flag.ON);
+								rule.setAttrFlag(Attr.SENDER, Flag.ON);
 							}
 						}
 					}
@@ -81,7 +80,7 @@ public class Relations {
 								if (s.startsWith(a.toString()+Cons.EQ.toString())) {
 									String[] attributes = s.split(Cons.EQ.toString());
 									if (attributes.length>1) rule.setAttr(a,attributes[1]);
-									rule.setAttrFlag1(a, Flag.ON);
+									rule.setAttrFlag(a, Flag.ON);
 									break;
 								}
 							}
@@ -153,7 +152,7 @@ public class Relations {
 				sheet = workbook.createSheet(r.getAttr(Attr.JOBN_PAR));
 				row = sheet.createRow(rowNum++);
 				for (Attr a : Attr.values()) {
-					if (r.getAttrFlag1(a).equals(Flag.ON)) {
+					if (r.getAttrFlag(a).equals(Flag.ON)) {
 						Cell cell = row.createCell(cellNum++);
 						cell.setCellValue(a.toString());
 					}
@@ -162,21 +161,21 @@ public class Relations {
 			cellNum=0;
 			row = sheet.createRow(rowNum++);
 			for (Attr a : Attr.values()) {
-				if (r.getAttrFlag1(a).equals(Flag.ON)) {
-				try {
-					Field f = r.getClass().getDeclaredField(a.toString().toLowerCase());
-					f.setAccessible(true);
-					value=(String)f.get(r);
-					Cell cell = row.createCell(cellNum++);
-					cell.setCellValue(value);
-				} catch (NoSuchFieldException e) {
-					System.out.println("NoSuchFieldException "+e);
-				} catch (IllegalAccessException e) {
-					System.out.println("IllegalAccessException "+e);
-				} catch (Exception e) {
-					System.out.println("Exception "+e);
+				if (r.getAttrFlag(a).equals(Flag.ON)) {
+					try {
+						Field f = r.getClass().getDeclaredField(a.toString().toLowerCase());
+						f.setAccessible(true);
+						value=(String)f.get(r);
+						Cell cell = row.createCell(cellNum++);
+						cell.setCellValue(value);
+					} catch (NoSuchFieldException e) {
+						System.out.println("NoSuchFieldException "+e);
+					} catch (IllegalAccessException e) {
+						System.out.println("IllegalAccessException "+e);
+					} catch (Exception e) {
+						System.out.println("Exception "+e);
+					}
 				}
-			}
 			}			
 			job=r.getAttr(Attr.JOBN_PAR);
 		}
