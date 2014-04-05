@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -17,6 +19,7 @@ import org.apache.poi.ss.usermodel.Row;
 
 public class Relations {
 	TreeSet<Rule> rel;
+	Rule excRule=null;
 	
 	@Override
 	public String toString() {
@@ -27,13 +30,50 @@ public class Relations {
 	}
 	
 	public int readConfig(String fileName, Sort sort) {
-		int numRules=0;
-		File file = new File(fileName);
+		File file;
+		FileReader fr;
+		BufferedReader br;
+		String data;
+		
+		file = new File("src/input/settings");
 		if (file!=null) {
 			try {
-				String data;
-				FileReader fr =	new FileReader(file);
-				BufferedReader br =	new BufferedReader(fr);
+				fr = new FileReader(file);
+				br = new BufferedReader(fr);
+				while ((data=br.readLine())!=null) {
+					if (excRule==null && data.startsWith(Cons.EXC.toString())) {
+						excRule = new Rule();
+						continue;
+					}
+					if (excRule!=null) {
+						String[] attributes = data.split(Cons.EQ.toString());
+						for (Attr a : Attr.values()) {
+							if (a.toString().equals(attributes[0]) && excRule.getAttr(a)!=null && !excRule.getAttr(a).isEmpty()) {
+								System.out.println("ERROR in settings "+"src/input/settings: " + a.toString());
+							}
+							if (a.toString().equals(attributes[0]) && attributes.length>1) {
+								excRule.setAttr(a,attributes[1]);
+								break;
+							}
+						}
+					}
+				}
+				br.close();
+				fr.close();
+			} catch (FileNotFoundException e) {
+				System.out.println("FileNotFoundException during reading file "+"src/input/settings");
+			} catch (IOException e) {
+				System.out.println("IOException during reading file "+"src/input/settings");
+			}
+			
+		}
+		boolean notAdd=false;
+		int numRules=0;
+		file = new File(fileName);
+		if (file!=null) {
+			try {
+				fr = new FileReader(file);
+				br = new BufferedReader(fr);
 				
 				switch (sort) {
 					case JOB:
@@ -53,8 +93,25 @@ public class Relations {
 					if (data.startsWith(Cons.STANDARD_RULE.toString())) {					
 					// standard rule
 						if (rule!=null) {
-							rel.add(rule);
-							numRules++;
+							notAdd=false;
+							for (Attr a : Attr.values()) {
+								String excVal = excRule.getAttr(a);
+								String val = rule.getAttr(a);
+								if (excVal!=null && !excVal.isEmpty()) {
+									if (val!=null && !val.isEmpty()) {
+										Pattern p = Pattern.compile(excVal);
+										Matcher m = p.matcher(val);
+										if (m.matches()) {
+											notAdd=true;
+											break;
+										}
+									}
+								}
+							}
+							if (!notAdd) {
+								rel.add(rule);
+								numRules++;
+							}
 						}
 						rule = new Rule();
 						String[] line = data.split(Cons.SP.toString());
@@ -94,8 +151,25 @@ public class Relations {
 				}
 				
 				if (rule!=null) {
-					rel.add(rule);
-					numRules++;
+					notAdd=false;
+					for (Attr a : Attr.values()) {
+						String excVal = excRule.getAttr(a);
+						String val = rule.getAttr(a);
+						if (excVal!=null && !excVal.isEmpty()) {
+							if (val!=null && !val.isEmpty()) {
+								Pattern p = Pattern.compile(excVal);
+								Matcher m = p.matcher(val);
+								if (m.matches()) {
+									notAdd=true;
+									break;
+								}
+							}
+						}
+					}
+					if (!notAdd) {
+						rel.add(rule);
+						numRules++;
+					}
 				}
 				br.close();
 				fr.close();

@@ -3,7 +3,8 @@ public enum Cons {
 	SP(" "),
 	EQ("="),
 	JOB_PARN_REGEX("[\" ]"),
-	STANDARD_RULE("EV_ATTRI=SENDER");
+	STANDARD_RULE("EV_ATTRI=SENDER"),
+	EXC("EXCLUSION");
 	
 	private final String s;
 	

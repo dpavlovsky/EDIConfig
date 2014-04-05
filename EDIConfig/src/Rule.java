@@ -8,6 +8,8 @@ public class Rule implements Comparable<Rule> {
 	private TreeMap<Attr,Flag> 		flags = new TreeMap<Attr,Flag>();
 	private TreeMap<Attr,String> 	vals = new TreeMap<Attr,String>();
 	
+//	private String group;
+	
 	public Rule() {
 		for (Attr a : Attr.values()) {
 			flags.put(a, Flag.OFF);

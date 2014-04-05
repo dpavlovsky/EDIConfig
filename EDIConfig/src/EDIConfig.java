@@ -1,5 +1,4 @@
 
-
 public class EDIConfig {
 
 	public static void main(String[] args) {
@@ -8,7 +7,7 @@ public class EDIConfig {
 		relations.writeConfig("src/output/roadmap.csv",";");
 		relations.writeConfig("src/output/roadmap.xls","\t");
 		relations.writeConfigXLS("src/output/roadmapJOB.xls");
-		System.out.print(relations);
+//		System.out.print(relations);
 		System.out.println(i);
 	}
 
