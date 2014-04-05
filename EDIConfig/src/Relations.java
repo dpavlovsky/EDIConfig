@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -120,11 +121,10 @@ public class Relations {
 					bw.write("\n");
 					for (Attr a : Attr.values()) {
 						try {
-							String value="";
-							Field f = r.getClass().getDeclaredField(a.toString().toLowerCase());
+							Field f = r.getClass().getDeclaredField("vals");
 							f.setAccessible(true);
-							value=(String)f.get(r);
-							bw.write(value+delimeter);
+							TreeMap<Attr,String> vls = (TreeMap<Attr,String>)f.get(r);
+							bw.write(vls.get(a)+delimeter);
 						} catch (NoSuchFieldException e) {
 							System.out.println("NoSuchFieldException "+e);							
 						} catch (IllegalAccessException e) {
@@ -141,7 +141,7 @@ public class Relations {
 	
 	public void writeConfigXLS(String fileName) {
 		int rowNum=0, cellNum=0;
-		String job="", value="";
+		String job="";
 		HSSFWorkbook workbook = new HSSFWorkbook();
 		HSSFSheet sheet=null;
 		Row row=null;
@@ -163,11 +163,11 @@ public class Relations {
 			for (Attr a : Attr.values()) {
 				if (r.getAttrFlag(a).equals(Flag.ON)) {
 					try {
-						Field f = r.getClass().getDeclaredField(a.toString().toLowerCase());
+						Field f = r.getClass().getDeclaredField("vals");
 						f.setAccessible(true);
-						value=(String)f.get(r);
+						TreeMap<Attr,String> vls = (TreeMap<Attr,String>)f.get(r);
 						Cell cell = row.createCell(cellNum++);
-						cell.setCellValue(value);
+						cell.setCellValue(vls.get(a));
 					} catch (NoSuchFieldException e) {
 						System.out.println("NoSuchFieldException "+e);
 					} catch (IllegalAccessException e) {
